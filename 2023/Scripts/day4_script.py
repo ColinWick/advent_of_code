@@ -29,8 +29,27 @@ for x in enumerate(input):
     data[x[0]] = [winner,myside,overlap,score]
 
 sum = 0
-
 for a in data.keys():
     sum += data[a][3]
 
 sum
+
+# Part 2 
+counts = dict()
+for x in data.keys():
+    counts[x] = 1
+card_defs = data
+
+for x in counts.keys():
+    overlap = card_defs[x][2]
+    overlap
+    if card_defs[x] != '':
+        for y in range(1,len(overlap)+1):
+            counts[x+y] += 1 * counts[x]
+            y
+
+mysum = 0
+for x in counts.items():
+    mysum += x[1]
+
+mysum
