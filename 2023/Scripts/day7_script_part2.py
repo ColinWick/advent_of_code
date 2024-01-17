@@ -19,7 +19,7 @@ def convert(x):
     elif x == "T":
         return 10
     elif x == "J":
-        return 11
+        return 1
     elif x == "Q":
         return 12
     elif x == "K":
@@ -32,31 +32,31 @@ def define_cards(hand_string):
         return myhand
 
 def power_level(cards):
-#    cards = define_cards('KK677')
-    hand_size = len(cards)
-    counts = [cards.count(x) for x in cards]
+    jacks = sum(1 for x in cards if x == 1)
+    counts = [cards.count(x) for x in cards if x != 1]
     unique_cards = [x for x in set(cards)]
     unique_cards.sort()
+    wildcard_counts = [x + jacks for x in counts]
 
-    if 5 in counts: # 5 set
+    natural_2_pair = len([x for x in counts if x == 2]) == 4
+
+    if 5 in wildcard_counts or jacks == 5: # 5 set
         ranking = 7
-    elif 4 in counts: # 4 set
+    elif 4 in wildcard_counts: # 4 set
         ranking = 6
-    elif 3 in counts and 2 in counts: # 3 of a kind
+    elif (3 in counts and 2 in counts) or (natural_2_pair and jacks == 1): # boat
         ranking = 5
-    elif 3 in counts: # 2 pair
+    elif 3 in wildcard_counts: # 3kind
         ranking = 4
-    elif len([x for x in counts if x == 2]) == 4: # BUG HERE
+    elif natural_2_pair and jacks != 1: # BUG HERE
         ranking = 3
-    elif len([x for x in counts if x == 2]) == 2: # BUG HERE
+    elif 2 in wildcard_counts: # BUG HERE
         ranking = 2
     else:
         ranking = 1
 
     return ranking
 
-
-    
 class hand():
     def __init__(self, hand_string, bid) -> None:
         self.hand_string = hand_string
@@ -81,3 +81,4 @@ hand_df = hand_df.assign(ranking=ranks)
 hand_df['score'] = hand_df.bid * hand_df.ranking
 
 hand_df['score'].agg(sum)
+hand_df.iloc[0:40,0::]
